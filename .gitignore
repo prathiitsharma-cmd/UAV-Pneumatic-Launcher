@@ -1,0 +1,73 @@
+# MATLAB
+*.m~
+*.mat
+*.mex*
+*.o
+*.mexa64
+*.mexw32
+*.mexw64
+*.app
+*.exe
+.matlabroot
+octave-workspace
+
+# MATLAB Simulink
+*.slx.autosave
+*.mdl.autosave
+*.slxc
+
+# MATLAB Code Generation
+codegen/
+slprj/
+sccvs.ini
+*_codegen_info.xml
+*.rtwmake.prf
+rtw/
+*.atsv
+
+# Build artifacts
+*.p
+*.ocs
+
+# Temporary files
+*.asv
+*.bak
+
+# User-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# Output files (optional - uncomment if you want to exclude)
+# output/
+# *.png
+# *.csv
+# *.txt
+
+# Python cache (if you use both MATLAB and Python)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# LaTeX/PDF (if you generate reports)
+*.aux
+*.log
+*.pdf
+*.synctex.gz
+
+# OS-specific
+.DS_Store
+Thumbs.db
