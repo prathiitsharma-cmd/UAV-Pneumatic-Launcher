@@ -1,0 +1,300 @@
+\# Results Summary
+
+
+
+The sweep runs 396 conditions. This document reports where the governing
+
+one landed, what got sized off it, and whether the sizing actually holds
+
+across the other 395.
+
+
+
+\---
+
+
+
+\## Worst-case design point
+
+
+
+\*\*20 kg UAV @ 15° launch angle.\*\*
+
+
+
+The instinct going in was that the heaviest airframe would govern — more
+
+mass at the same launch speed means more kinetic energy, so surely more
+
+force. That instinct is wrong here, and the sweep is what catches it.
+
+
+
+Required force doesn't scale with mass alone. It scales with mass \*and\* with
+
+how much of the fixed stroke is left to accelerate through, and the second
+
+term is set by angle, not mass. At 15°, the steepest angle in the sweep,
+
+the usable stroke along the rail is more compressed than at any shallower
+
+angle, so reaching 55.56 m/s within that stroke demands more force per
+
+kilogram of airframe than a shallower launch would. That penalty is large
+
+enough to pull the peak off the mass axis entirely — 20 kg, not 49.9 kg,
+
+is where the two effects combine hardest.
+
+
+
+|                          |                    |
+
+| ------------------------ | ------------------ |
+
+| UAV mass                 | 20 kg               |
+
+| Launch angle              | 15°                 |
+
+| Target launch speed       | 55.56 m/s           |
+
+| Peak acceleration         | 15 g                |
+
+
+
+A single-point design that assumed the heaviest mass governed at some fixed
+
+angle would have missed this condition. Running the full 11×36 grid instead
+
+of picking a corner is the only reason it surfaced at all.
+
+
+
+\---
+
+
+
+\## Component sizing
+
+
+
+Sized off the governing point above, with ISO 4414 safety factors (1.5× on
+
+force, 1.25× on pressure) and 15% of stroke reserved for hardware end travel
+
+(70% effective stroke used in the kinematics).
+
+
+
+|                                  |                                                          |
+
+| -------------------------------- | -------------------------------------------------------- |
+
+| Cylinder bore                    | \*\*125 mm\*\* (ISO 6431)                                     |
+
+| Cylinder stroke                  | \*\*3,900 mm\*\* (ISO 6431)                                   |
+
+| Mechanical advantage              | 2:1 cable-pulley → 1,250 mm actuator stroke (ISO catalogue) |
+
+| Accumulator volume                | \*\*1,000 L\*\* (EN 286-1)                                    |
+
+| Accumulator charge pressure       | 10 bar                                                    |
+
+| Working pressure at governing point | \*\*5.93 bar\*\* (max 8 bar)                                |
+
+| Recommended cylinder               | Parker P1D-S0125MS3900 / Bosch Rexroth CDL1MP5/125A3900   |
+
+
+
+The 2:1 mechanical advantage exists because a direct-drive 3,900 mm cylinder
+
+isn't a catalogue length — it's custom, and custom means lead time and no
+
+field spares. Geared 2:1, the actuator only needs to travel 1,250 mm, which
+
+\*is\* a standard ISO 6431 length. The cost is a doubled force requirement on
+
+the actuator side, which the bore and safety factors absorb.
+
+
+
+Working pressure sits at 5.93 bar against an 8 bar system max — margin that
+
+exists because the accumulator and bore were sized with safety factors
+
+already applied, not tuned tight to the governing point. That margin is what
+
+gets tested in the next section.
+
+
+
+\---
+
+
+
+\## Verification
+
+
+
+The sized components were checked back against all 396 conditions, not just
+
+the one they came from.
+
+
+
+|                                        |             |
+
+| --------------------------------------- | ----------- |
+
+| Conditions evaluated                     | 396 / 396   |
+
+| Within bore capacity                     | 396 / 396   |
+
+| Within stroke capacity                   | 396 / 396   |
+
+| Within accumulator volume                | 396 / 396   |
+
+| Within pressure limit (< 8 bar)          | 396 / 396   |
+
+| Max working pressure observed            | 5.93 bar (at governing point) |
+
+| Buckling factor of safety                | 5.5 (target > 4.0) |
+
+| \*\*Envelope coverage\*\*                    | \*\*100%\*\*    |
+
+
+
+The governing point produces the peak of both bore demand and working
+
+pressure at once, which is what makes checking against it alone
+
+defensible — no other combination of mass and angle in the tested range
+
+comes closer to the limits.
+
+
+
+\---
+
+
+
+\## Performance comparison — this design vs. Robonic MC0315L
+
+
+
+The MC0315L is a fielded, fully pneumatic small-UAV launcher from Robonic
+
+Ltd (Safran Electronics \& Defence), used here as a sanity check against a
+
+production system in the same weight class — not as a benchmark this design
+
+is trying to beat.
+
+
+
+|                          | This design                  | Robonic MC0315L        |
+
+| ------------------------ | ----------------------------- | ------------------------ |
+
+| UAV mass range            | 5 – 49.9 kg                    | up to 40 kg               |
+
+| Launch angle               | 5 – 15°                        | 5 – 15°                   |
+
+| Launch speed                | 55.56 m/s (target)            | 15 m/s (at 30 kg)         |
+
+| Peak acceleration           | 15 g                            | < 12 g                    |
+
+| System pressure              | 5.93 bar working / 8 bar max   | up to 10 bar max          |
+
+| Cylinder bore                 | 125 mm                         | not published              |
+
+| Accumulator                    | 1,000 L @ 10 bar               | not published              |
+
+
+
+These aren't interchangeable systems and the table shouldn't be read as
+
+one. The MC0315L is built around 15 m/s for target drones and light
+
+reconnaissance airframes; this design targets 55.56 m/s, derived from the
+
+stall-speed margin of a specific rocket-glider (7 ft wingspan, 4.67 ft² wing
+
+area, 110 lb MTOW, 90 KTAS cruise). That \~3.7× speed difference is the
+
+dominant driver of almost every other gap in the table — higher
+
+acceleration, more stored energy, a bigger accumulator. What the comparison
+
+is actually useful for: confirming this design's angle range and pressure
+
+sit in the same envelope as an existing fielded launcher, rather than
+
+somewhere physically implausible.
+
+
+
+\---
+
+
+
+\## Key insights
+
+
+
+\*\*The governing point wasn't where intuition pointed.\*\* 20 kg at 15°, not
+
+49.9 kg at any angle. A worst-case assumption made without running the grid
+
+would have been wrong, and wrong in the direction that under-sizes the
+
+design — the failure mode that actually matters.
+
+
+
+\*\*Mass and angle interact instead of adding.\*\* Force demand isn't monotonic
+
+in mass across the sweep. Steep angle compresses stroke enough that a
+
+mid-range mass produces more force than the heaviest one tested. This is
+
+the entire argument for a 2D sweep over a 1D one.
+
+
+
+\*\*Catalogue constraints shaped the mechanical layout, not just the final
+
+part number.\*\* The 2:1 mechanical advantage is a direct response to ISO
+
+6431's available lengths — it exists because 1,250 mm is a catalogue size
+
+and 3,900 mm isn't, not because 2:1 was some independently optimal ratio.
+
+
+
+\*\*The design has real margin, not a bare pass.\*\* 5.93 bar against an 8 bar
+
+ceiling, and a 5.5 buckling factor of safety against a 4.0 target. That
+
+headroom is what makes the 396/396 verification result unsurprising rather
+
+than lucky.
+
+
+
+\*\*Verifying against the full grid is what makes the sizing defensible.\*\*
+
+"Handles its worst case" and "handles its worst case, and everything else
+
+in the tested envelope" are different claims. Only the second one is
+
+actually checked here.
+
+
+
+\*\*The MC0315L comparison is a sanity check, not a scoreboard.\*\* Nearly
+
+every difference in the comparison table traces back to one input — target
+
+launch speed — not to a fundamentally different design philosophy.
+

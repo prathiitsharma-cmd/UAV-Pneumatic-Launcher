@@ -1,0 +1,5 @@
+Parameter,Value,Unit,At_Mass_kg,At_Angle_deg
+Bore,96.2966021481777,mm,50,15
+Force,7283.02511780156,N,50,15
+Accumulator,268.728614067793,L,50,5
+Kinetic Energy,62257.4125426669,J,50,5

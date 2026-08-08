@@ -1,0 +1,30 @@
+=================================================================
+ PARAMETRIC SWEEP ANALYSIS SUMMARY
+=================================================================
+
+Analysis timestamp: 2026-08-08_124447
+Total grid points: 264 (11 angles x 24 masses)
+
+WORST-CASE DESIGN POINTS:
+  Bore demand:        96.30 mm at 50 kg @ 15 deg
+  Force requirement:  7283 N at 50 kg @ 15 deg
+  Accumulator volume: 269 L at 50 kg @ 5 deg
+  Kinetic energy:     62257 J at 50 kg @ 5 deg
+
+COMPONENT SIZING (ISO STANDARD):
+  Bore: 125 mm (calculated 96.30 mm)
+  Stroke: 3900 mm (calculated 3850 mm)
+  Accumulator: 1000 L (calculated 269 L)
+  Working pressure: 5.93 bar (max allowable 8.0 bar)
+
+VERIFICATION:
+  Envelope coverage: 264/264 grid points covered
+  Buckling FoS: 5.5 (target > 4.0)
+  Pressure FoS: 1.25 (applied)
+  Force FoS: 1.5 (applied)
+
+RECOMMENDED COMPONENTS:
+  Cylinder: Parker P1D-S0125MS3900 or Bosch Rexroth CDL1MP5/125A3900
+  Accumulator: EN 286-1 standard 1000 L @ 10 bar (or Hydac SBO1000)
+
+=================================================================
