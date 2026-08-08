@@ -45,10 +45,28 @@ with a six-month lead time and no field-replaceable spares.
 
 ---
 
-## Install
+## Parametric sweep results
 
-Requires MATLAB R2021a or later. No toolboxes beyond base MATLAB — the
-contour plots use built-in `contourf`/`contour`.
+![2D parametric sweep contour plots: bore diameter, piston force, accumulator volume, and kinetic energy](analysis/output/figures/contour_bore.png)
+
+Four panels over the angle-mass plane, one per component demand:
+
+- **Bore diameter (top-left):** required cylinder bore across the full grid.
+  Red star marks the governing point (20 kg @ 15°); the 125 mm ISO contour
+  line covers the entire envelope.
+- **Piston force (top-right):** force demand rises diagonally with both mass
+  and angle — the governing point sits where this surface peaks.
+- **Accumulator volume (bottom-left):** contours run vertical, meaning
+  volume depends on mass alone, not angle — consistent with energy scaling
+  as ½mv² rather than with launch geometry.
+- **Kinetic energy (bottom-right):** also vertical, confirming launch angle
+  affects the *force* needed to reach the target speed but not the *energy*
+  stored to get there. Angle changes how hard you push; mass changes how
+  much you're pushing.
+
+---
+
+## Install
 
 ```
 git clone https://github.com/<your-username>/pneumatic-launcher.git
@@ -57,58 +75,41 @@ cd pneumatic-launcher
 
 ## Run it
 
-```matlab
-run('src/run_parametric_sweep.m')
+```
+cd analysis/scripts/
 ```
 
-Runs the full 396-point grid (11 angles × 36 masses) and writes one row per
-condition — force, bore demand, accumulator volume — from closed-form launch
-kinematics. No iterative solve, runs in seconds.
-
 ```matlab
-run('src/plot_contours.m')
+run('pneumatic_launcher.m')
 ```
 
-Renders the sweep as four contour panels over the angle-mass plane: bore
-demand, force requirement, accumulator volume, kinetic energy.
+One script, end to end. In order, it:
 
-```matlab
-run('src/find_worst_case.m')
-```
+1. Sweeps the full 396-point grid (11 angles × 36 masses) and computes
+   force, bore demand, and accumulator volume at each condition from
+   closed-form launch kinematics — no iterative solve.
+2. Scans all 396 conditions and identifies the governing point.
+3. Sizes ISO 6431 bore/stroke and EN 286-1 accumulator volume against the
+   governing condition, with ISO 4414 safety factors applied (1.5× on
+   force, 1.25× on pressure).
+4. Re-checks all 396 conditions against the sized components — not just the
+   one they were derived from.
+5. Renders the four-panel contour plots over the angle-mass plane.
+6. Exports the CSV of all 396 grid points, the worst-case summary, and a
+   timestamped text summary report.
 
-Scans all 396 conditions and reports the single point that drives the
-largest bore demand, with the full state at that point.
-
-```matlab
-run('src/size_components.m')
-```
-
-Takes the worst-case condition and sizes ISO 6431 bore/stroke and EN 286-1
-accumulator volume against it, with ISO 4414 safety factors applied (1.5× on
-force, 1.25× on pressure).
-
-```matlab
-run('src/verify_envelope.m')
-```
-
-Re-checks all 396 conditions against the sized components — not just the one
-they were derived from.
-
-```matlab
-run('src/export_results.m')
-```
-
-Writes the CSV of all 396 grid points and a timestamped text summary report.
+Runtime: 5–10 minutes. Requires MATLAB R2020a or later and the Statistics
+and Machine Learning Toolbox.
 
 ## Reproducibility
 
 The sweep is fully deterministic. There's no random sampling anywhere — the
 396 points are a dense grid, not a Monte Carlo sample — so the same launch
 angle range, mass range, and target launch speed in the config block at the
-top of `run_parametric_sweep.m` always reproduce the same governing
-condition. Change the grid resolution or target speed and the governing
-point can shift, which is expected; the config is exposed at the top of the
-script rather than buried so that can be checked directly.
+top of `pneumatic_launcher.m` always reproduce the same governing condition.
+Change the grid resolution or target speed and the governing point can
+shift, which is expected; the config is exposed at the top of the script
+rather than buried so that can be checked directly.
 
 ---
 
@@ -116,7 +117,7 @@ script rather than buried so that can be checked directly.
 
 ### Component 1 — parametric sweep engine
 
-`src/run_parametric_sweep.m`
+`analysis/scripts/pneumatic_launcher.m`, sweep stage
 
 For every (angle, mass) pair on an 11×36 grid, computes the force needed to
 reach 55.56 m/s within the stroke budget, and the resulting bore and
@@ -126,7 +127,7 @@ convergence tolerances.
 
 ### Component 2 — contour visualization
 
-`src/plot_contours.m`
+`analysis/scripts/pneumatic_launcher.m`, plotting stage
 
 Four-panel contour plot over the angle-mass plane. This is what makes the
 non-obvious result visible: the force peak isn't at the mass axis extreme,
@@ -135,7 +136,7 @@ compresses the available stroke.
 
 ### Component 3 — worst-case extraction
 
-`src/find_worst_case.m`
+`analysis/scripts/pneumatic_launcher.m`, extraction stage
 
 Scans all 396 conditions for the one that drives the largest bore demand.
 Reports mass, angle, force, and pressure at that point, so the sizing in
@@ -146,7 +147,7 @@ Result: **20 kg @ 15°**, not the 49.9 kg maximum mass in the sweep.
 
 ### Component 4 — ISO/EN component sizing
 
-`src/size_components.m`
+`analysis/scripts/pneumatic_launcher.m`, sizing stage
 
 Works backward from the governing condition to a catalogue part: bore
 rounded to the nearest ISO 6431 size, stroke set by launch kinematics plus a
@@ -164,29 +165,44 @@ working pressure against an 8 bar system max.
 
 ### Component 5 — envelope verification
 
-`src/verify_envelope.m`
+`analysis/scripts/pneumatic_launcher.m`, verification stage
 
 Re-runs all 396 conditions against the sized components, not just the
 governing point. This is the check that catches a design that clears its
 worst case on paper but fails somewhere else in the grid — 396/396 pass here.
 
-### Component 6 — design assumptions
+### Component 6 — design decisions and assumptions
 
-`docs/DESIGN_ASSUMPTIONS.md`
+`docs/DESIGN_DECISIONS.md`
 
-All 10 assumptions behind the model — target launch speed derivation, stroke
+All assumptions behind the model — target launch speed derivation, stroke
 reserve, mechanical advantage ratio, safety factor sourcing — with the
-rationale for each, so a reviewer can tell what's a physical constraint
-versus a judgment call.
+rationale for each and a sensitivity ranking, so a reviewer can tell what's
+a physical constraint versus a judgment call, and which assumptions matter
+most if they turn out to be wrong.
 
 ---
 
 ## Documentation
 
-- **docs/ANALYSIS_REPORT.md** — full sweep methodology and sizing derivation
-- **docs/DESIGN_ASSUMPTIONS.md** — all 10 assumptions with rationale
-- **results/summary_report.txt** — generated timestamped summary from the
-  most recent run
+**Quick reference**
+- **docs/RESULTS_SUMMARY.md** — governing point, component sizing,
+  verification results, and a comparison against a fielded reference
+  launcher (Robonic MC0315L)
+- **docs/DESIGN_DECISIONS.md** — why a 2D sweep, why ISO parts, why 2:1
+  mechanical advantage, and a sensitivity ranking of the underlying
+  assumptions
+
+**Detailed technical**
+- **analysis/ANALYSIS_REPORT.md** — full methodology, physics equations,
+  and verification procedure
+
+**Data**
+- `analysis/output/tables/component_sizing_results.csv` — all 396 grid
+  points
+- `analysis/output/tables/worst_case_summary.csv` — governing condition
+  detail
+- `analysis/output/reports/analysis_summary.txt` — timestamped text summary
 
 ## Things that are wrong with it
 
@@ -211,22 +227,49 @@ Kept here rather than buried:
 - **Component selection is catalogue-level, not vendor-quoted.** Part
   numbers match the required bore and stroke from published catalogue data;
   actual lead time and cost need vendor confirmation.
+- **Pressure is treated as quasi-static.** Transient pressure waves during
+  rapid valve opening aren't modeled, and the gas expansion is assumed
+  isothermal rather than tracking real temperature drop under discharge.
+- **The rail is rigid.** No deflection under dynamic load is modeled.
+- **Valid range is −20°C to +25°C.** Behavior outside that band, and piston
+  seal friction beyond a lumped efficiency factor, aren't modeled.
+- **No aerodynamic interaction during the ground roll.** The launch is
+  modeled as if in still air — no crosswind, no dirty air effects.
+
+Most accurate for: 5–15° launch angles, 5–49.9 kg UAV mass, isothermal
+pneumatic expansion, static pressure conditions. See
+**docs/DESIGN_DECISIONS.md** for the sensitivity ranking behind these.
 
 ## Layout
 
 ```
-src/
-  run_parametric_sweep.m   Component 1: 396-point grid, launch kinematics
-  plot_contours.m          Component 2: 4-panel contour plots
-  find_worst_case.m        Component 3: governing-condition extraction
-  size_components.m        Component 4: ISO 6431 / EN 286-1 sizing
-  verify_envelope.m        Component 5: full-grid verification
-  export_results.m         CSV + timestamped summary export
-docs/
-  ANALYSIS_REPORT.md       Full methodology write-up
-  DESIGN_ASSUMPTIONS.md    All 10 assumptions with rationale
-results/
-  sweep_results.csv        All 396 grid points
-  summary_report.txt       Timestamped sizing summary
-  figures/                 Contour plot outputs
+pneumatic-launcher/
+├── README.md
+├── LICENSE
+│
+├── analysis/                          MATLAB analysis
+│   ├── README.md                      How to run the analysis
+│   ├── ANALYSIS_REPORT.md             Full methodology
+│   ├── scripts/
+│   │   └── pneumatic_launcher.m       Component 1–5: sweep, sizing, verification
+│   ├── data/
+│   │   ├── rocket_glider_specs.json
+│   │   └── iso_catalog_sizes.csv
+│   └── output/
+│       ├── figures/
+│       │   └── contour_*.png          4-panel contour plots
+│       ├── tables/
+│       │   ├── component_sizing_results.csv   All 396 grid points
+│       │   └── worst_case_summary.csv         Governing condition
+│       └── reports/
+│           └── analysis_summary.txt           Text summary
+│
+├── docs/                              Project documentation
+│   ├── RESULTS_SUMMARY.md             Governing point, sizing, verification
+│   └── DESIGN_DECISIONS.md            Rationale, trade-offs, sensitivity
+│
+├── results/
+│   └── BILL_OF_MATERIALS.md           Component procurement list
+│
+└── cad/                               CAD models
 ```
