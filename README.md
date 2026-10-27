@@ -1,4 +1,9 @@
-# pneumatic-launcher
+# UAV Pneumatic Launcher
+
+![MATLAB](https://img.shields.io/badge/MATLAB-R2020a+-0076A8?style=flat-square)
+![Sweep](https://img.shields.io/badge/parametric%20sweep-396%20points-22d3ee?style=flat-square)
+![Standards](https://img.shields.io/badge/ISO%206431%20%C2%B7%20EN%20286--1%20%C2%B7%20ISO%204414-1f2937?style=flat-square)
+![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
 
 A pneumatic catapult launcher for a fixed-wing UAV, sized from a 396-point 2D
 parametric sweep across launch angle and vehicle mass rather than a single
@@ -69,8 +74,8 @@ Four panels over the angle-mass plane, one per component demand:
 ## Install
 
 ```
-git clone https://github.com/<your-username>/pneumatic-launcher.git
-cd pneumatic-launcher
+git clone https://github.com/prathiitsharma-cmd/UAV-Pneumatic-Launcher.git
+cd UAV-Pneumatic-Launcher
 ```
 
 ## Run it
@@ -198,11 +203,11 @@ most if they turn out to be wrong.
   and verification procedure
 
 **Data**
-- `analysis/output/tables/component_sizing_results.csv` — all 396 grid
-  points
-- `analysis/output/tables/worst_case_summary.csv` — governing condition
-  detail
-- `analysis/output/reports/analysis_summary.txt` — timestamped text summary
+- `analysis/output/tables/component_sizing_results_<timestamp>.csv` — all
+  396 grid points
+- `analysis/output/tables/worst_case_summary_<timestamp>.csv` — governing
+  condition detail
+- `analysis/output/reports/analysis_summary_<timestamp>.txt` — text summary
 
 ## Things that are wrong with it
 
@@ -243,33 +248,28 @@ pneumatic expansion, static pressure conditions. See
 ## Layout
 
 ```
-pneumatic-launcher/
+UAV-Pneumatic-Launcher/
 ├── README.md
 ├── LICENSE
 │
 ├── analysis/                          MATLAB analysis
-│   ├── README.md                      How to run the analysis
 │   ├── ANALYSIS_REPORT.md             Full methodology
 │   ├── scripts/
 │   │   └── pneumatic_launcher.m       Component 1–5: sweep, sizing, verification
-│   ├── data/
-│   │   ├── rocket_glider_specs.json
-│   │   └── iso_catalog_sizes.csv
 │   └── output/
 │       ├── figures/
-│       │   └── contour_*.png          4-panel contour plots
+│       │   └── contour_bore.png       4-panel contour plots
 │       ├── tables/
-│       │   ├── component_sizing_results.csv   All 396 grid points
-│       │   └── worst_case_summary.csv         Governing condition
+│       │   ├── component_sizing_results_<timestamp>.csv   All 396 grid points
+│       │   └── worst_case_summary_<timestamp>.csv         Governing condition
 │       └── reports/
-│           └── analysis_summary.txt           Text summary
+│           └── analysis_summary_<timestamp>.txt           Text summary
 │
-├── docs/                              Project documentation
-│   ├── RESULTS_SUMMARY.md             Governing point, sizing, verification
-│   └── DESIGN_DECISIONS.md            Rationale, trade-offs, sensitivity
-│
-├── results/
-│   └── BILL_OF_MATERIALS.md           Component procurement list
-│
-└── cad/                               CAD models
+└── docs/                              Project documentation
+    ├── RESULTS_SUMMARY.md             Governing point, sizing, verification
+    └── DESIGN_DECISIONS.md            Rationale, trade-offs, sensitivity
 ```
+
+---
+
+**Prathit Sharma** · [Portfolio](https://prathiitsharma-cmd.github.io) · [LinkedIn](https://linkedin.com/in/prathit-sharma) · [GitHub](https://github.com/prathiitsharma-cmd)
