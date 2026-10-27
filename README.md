@@ -203,11 +203,11 @@ most if they turn out to be wrong.
   and verification procedure
 
 **Data**
-- `analysis/output/tables/component_sizing_results_<timestamp>.csv` — all
-  396 grid points
-- `analysis/output/tables/worst_case_summary_<timestamp>.csv` — governing
-  condition detail
-- `analysis/output/reports/analysis_summary_<timestamp>.txt` — text summary
+- `analysis/output/tables/component_sizing_results.csv` — all 396 grid
+  points
+- `analysis/output/tables/worst_case_summary.csv` — governing condition
+  detail
+- `analysis/output/reports/analysis_summary.txt` — timestamped text summary
 
 ## Things that are wrong with it
 
@@ -253,23 +253,32 @@ UAV-Pneumatic-Launcher/
 ├── LICENSE
 │
 ├── analysis/                          MATLAB analysis
+│   ├── README.md                      How to run the analysis
 │   ├── ANALYSIS_REPORT.md             Full methodology
 │   ├── scripts/
 │   │   └── pneumatic_launcher.m       Component 1–5: sweep, sizing, verification
+│   ├── data/
+│   │   ├── rocket_glider_specs.json
+│   │   └── iso_catalog_sizes.csv
 │   └── output/
 │       ├── figures/
-│       │   └── contour_bore.png       4-panel contour plots
+│       │   └── contour_*.png          4-panel contour plots
 │       ├── tables/
-│       │   ├── component_sizing_results_<timestamp>.csv   All 396 grid points
-│       │   └── worst_case_summary_<timestamp>.csv         Governing condition
+│       │   ├── component_sizing_results.csv   All 396 grid points
+│       │   └── worst_case_summary.csv         Governing condition
 │       └── reports/
-│           └── analysis_summary_<timestamp>.txt           Text summary
+│           └── analysis_summary.txt           Text summary
 │
-└── docs/                              Project documentation
-    ├── RESULTS_SUMMARY.md             Governing point, sizing, verification
-    └── DESIGN_DECISIONS.md            Rationale, trade-offs, sensitivity
+├── docs/                              Project documentation
+│   ├── RESULTS_SUMMARY.md             Governing point, sizing, verification
+│   └── DESIGN_DECISIONS.md            Rationale, trade-offs, sensitivity
+│
+├── results/
+│   └── BILL_OF_MATERIALS.md           Component procurement list
+│
+└── cad/                               CAD models
 ```
 
 ---
 
-**Prathit Sharma** · [Portfolio](https://prathiitsharma-cmd.github.io) · [LinkedIn](https://linkedin.com/in/prathit-sharma) · [GitHub](https://github.com/prathiitsharma-cmd)
+**Prathit Sharma** · [Portfolio](https://prathiitsharma-cmd.github.io) · [LinkedIn](https://www.linkedin.com/in/prathit-sharma-4b7896333) · [GitHub](https://github.com/prathiitsharma-cmd)
